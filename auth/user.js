@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-let securityKey = "sonu1234";
+let securityKey = process.env["SECRATE_KEY"];
 
 const authenticateUser = async (req, res, next) => {
-    let token = req.cookies?.token;
+    let token = req.header("Authorization");
+    token = token.split(" ")[1];
 
     if (!token) {
         return res.status(400).json({ status: "fail", message: "Token not found" })

@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 // let securityKey = process.env["SECRATE_KEY"];
-let securityKey = "sonu1234";
+let securityKey = process.env["SECRATE_KEY"];
 
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
@@ -42,8 +42,8 @@ const loginUser = async (req, res) => {
         }
 
         let token = jwt.sign(obj, securityKey);
-        res.cookie("token", token, { httpOnly: true, maxAge: 86400000 });
-        return res.status(200).json({ status: "success", message: "Login succesfull", userName: email });
+        // res.cookie("token", token, { httpOnly: true, maxAge: 86400000 });
+        return res.status(200).json({ status: "success", message: "Login succesfull", userName: email, token:token });
 
     } catch (error) {
         console.log(error.message);
@@ -51,10 +51,7 @@ const loginUser = async (req, res) => {
     }
 }
 
-const logoutUser = async (req, res) => {
-    res.clearCookie("token");
-    res.status(200).json({ status: "success", message: "logout seccessfull" });
-}
 
 
-module.exports = { registerUser, loginUser, logoutUser }
+
+module.exports = { registerUser, loginUser}

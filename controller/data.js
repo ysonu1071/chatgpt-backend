@@ -6,12 +6,13 @@ const openai = new OpenAI({
     apiKey: process.env["OPENAI_API_KEY"], // defaults to process.env["OPENAI_API_KEY"]
 });
 
-// let securityKey = process.env["SECRATE_KEY"];
-console.log(process.env["SECRATE_KEY"]);
-let securityKey = "sonu1234";
+let securityKey = process.env["SECRATE_KEY"];
 
 const getAllData = async (req, res) => {
-    let token = req.cookies?.token;
+    let token = req.header("Authorization");
+    
+    token = token.split(" ")[1];
+    
 
     try {
         let verifiedToken = jwt.verify(token, securityKey);
@@ -32,7 +33,14 @@ const getAllData = async (req, res) => {
 }
 
 const generateChat = async (req, res) => {
-    let token = req.cookies?.token;
+    // let token = req.cookies?.token;
+    let token = req.header("Authorization");
+    
+    if(!token){
+       return res.json({status:"falil", message:"token not found"})
+    }
+    token = token.split(" ")[1];
+    
     let question = req.body.question;
     let chatId = req.body.chatId;
 
@@ -53,7 +61,7 @@ const generateChat = async (req, res) => {
             });
 
             // message = response["choices"][0]["message"]
-            console.log("message is: ", response.choices[0].message)
+            // console.log("message is: ", response.choices[0].message)
 
             let obj = {
                 question: question,
